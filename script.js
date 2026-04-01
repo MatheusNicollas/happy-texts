@@ -21,12 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             nameInput.focus();
         } else {
-            // Tudo certo! Redireciona para a segunda página passando o nome na URL
+            // Tudo certo!
             errorMsg.classList.remove('visible');
+            
+            // Pega o tema da URL da página name.html
+            const urlParams = new URLSearchParams(window.location.search);
+            const theme = urlParams.get('theme') || 'birthday'; // fallback caso não tenha
             
             // A codificação garante que caracteres como acentos ou espaços vá corretamente via URL HTTP
             const encodedName = encodeURIComponent(nomeDigitado);
-            window.location.href = `message.html?name=${encodedName}`;
+            
+            // Redireciona para a página do tema selecionado
+            window.location.href = `${theme}.html?name=${encodedName}`;
         }
     });
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Mensagem de Aniversário</title>
+    <!-- Fonte bonita e amigável para dar um tom de celebração -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="home-body fade-in">
+    <div class="card">
+        <h1>🎉 Criar mensagem<br>de aniversário</h1>
+        <p class="subtitle">Surpreenda alguém especial com uma mensagem personalizada!</p>
+        
+        <div class="input-group">
+            <label for="nameInput">Para quem é a mensagem?</label>
+            <input type="text" id="nameInput" placeholder="Digite o nome da pessoa..." autocomplete="off">
+            <span id="errorMsg" class="error-msg">Por favor, informe um nome.</span>
+        </div>
+
+        <button id="generateBtn" class="btn primary-btn">
+            Gerar mensagem ✨
+        </button>
+    </div>
+
+    <!-- Referência ao arquivo JavaScript principal -->
+    <script src="script.js"></script>
+</body>
+</html>

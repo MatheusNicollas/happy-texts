@@ -3,28 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Mensagem de Aniversário</title>
-    <!-- Fonte bonita e amigável para dar um tom de celebração -->
+    <title>Escolha a Celebração</title>
+    <!-- Fonte bonita e amigável -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="home-body fade-in">
-    <div class="card">
-        <h1>🎉 Criar mensagem<br>de aniversário</h1>
-        <p class="subtitle">Surpreenda alguém especial com uma mensagem personalizada!</p>
+<body class="home-body fade-in index-page">
+    <div class="card index-card">
+        <h1>Qual é a ocasião? ✨</h1>
+        <p class="subtitle">Escolha o tipo de felicitação que você deseja enviar!</p>
         
-        <div class="input-group">
-            <label for="nameInput">Para quem é a mensagem?</label>
-            <input type="text" id="nameInput" placeholder="Digite o nome da pessoa..." autocomplete="off">
-            <span id="errorMsg" class="error-msg">Por favor, informe um nome.</span>
+        <div class="themes-grid">
+            <a href="name.html?theme=birthday" class="theme-btn theme-birthday">
+                <span class="emoji">🎂</span> Aniversário
+            </a>
+            <a href="name.html?theme=christmas" class="theme-btn theme-christmas">
+                <span class="emoji">🎄</span> Natal
+            </a>
+            <a href="name.html?theme=newyear" class="theme-btn theme-newyear">
+                <span class="emoji">🥂</span> Ano Novo
+            </a>
+            <a href="name.html?theme=easter" class="theme-btn theme-easter">
+                <span class="emoji">🐰</span> Páscoa
+            </a>
+            <a href="name.html?theme=mothersday" class="theme-btn theme-mothersday">
+                <span class="emoji">🌹</span> Dia das Mães
+            </a>
+            <a href="name.html?theme=fathersday" class="theme-btn theme-fathersday">
+                <span class="emoji">👔</span> Dia dos Pais
+            </a>
         </div>
-
-        <button id="generateBtn" class="btn primary-btn">
-            Gerar mensagem ✨
-        </button>
     </div>
-
-    <!-- Referência ao arquivo JavaScript principal -->
-    <script src="script.js"></script>
 </body>
 </html>

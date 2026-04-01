@@ -284,4 +284,82 @@ input:focus {
     h1 { font-size: 2rem; }
     .card { padding: 2rem 1.5rem; }
     .balloon { width: 45px; height: 60px; }
+    .themes-grid { grid-template-columns: 1fr; }
+}
+
+/* Temas Específicos */
+.birthday-theme { background: var(--bg-gradient-msg); }
+
+.christmas-theme { background: linear-gradient(135deg, #166534 0%, #15803d 100%); }
+.christmas-theme .message-card { border-color: #dc2626; }
+.christmas-theme h1 { color: #dc2626; }
+
+.newyear-theme { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+.newyear-theme .message-card { border-color: #eab308; }
+.newyear-theme h1 { color: #eab308; }
+.newyear-theme .wishes { color: #cbd5e1; }
+.newyear-theme .card { background: rgba(30, 41, 59, 0.95); }
+
+.easter-theme { background: linear-gradient(135deg, #fdf4ff 0%, #fce7f3 100%); }
+.easter-theme .message-card { border-color: #d946ef; }
+.easter-theme h1 { color: #d946ef; }
+
+.mothersday-theme { background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); }
+.mothersday-theme .message-card { border-color: #fb7185; }
+.mothersday-theme h1 { color: #e11d48; }
+
+.fathersday-theme { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); }
+.fathersday-theme .message-card { border-color: #0284c7; }
+.fathersday-theme h1 { color: #0369a1; }
+
+/* Index Grid */
+.index-page .index-card {
+    max-width: 600px;
+}
+.themes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 1.5rem;
+}
+.theme-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 12px;
+    color: var(--text-white);
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+.theme-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+}
+.theme-birthday { background: #F59E0B; }
+.theme-christmas { background: #16a34a; }
+.theme-newyear { background: #334155; }
+.theme-easter { background: #d946ef; }
+.theme-mothersday { background: #f43f5e; border: 1px solid #e11d48; }
+.theme-fathersday { background: #0284c7; }
+.emoji { font-size: 1.5rem; }
+
+/* Menos padding em mobile para o grid caber bem */
+@media (max-width: 400px) {
+    .themes-grid { gap: 10px; }
+    .theme-btn { padding: 0.8rem; font-size: 1rem; }
+}
+
+/* Canvas auxiliares */
+#snowCanvas, #fireworksCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 5;
 }
