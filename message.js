@@ -13,6 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
         titulo.textContent = 'Feliz aniversário! 🎂🎈';
     }
 
+    // --- Escolhe uma mensagem aleatória ---
+    const mensagens = [
+        "Que o seu dia seja repleto de alegria, sorrisos e momentos inesquecíveis! Parabéns! 🥳",
+        "Espero que seu dia seja tão incrível quanto você! Aproveite muito o seu aniversário! 🎉",
+        "Que este novo ano de vida lhe traga muita paz, saúde e sucesso nas suas conquistas! 🥂",
+        "Celebre a vida, ame as pessoas e aproveite cada momento de hoje. Feliz aniversário! ✨",
+        "Um ano novo inteirinho para você brilhar. Tudo de mais maravilhoso no seu dia especial! 🍰"
+    ];
+
+    const mensagemAleatoria = mensagens[Math.floor(Math.random() * mensagens.length)];
+    const paragrafoDesejo = document.querySelector('.wishes');
+    if (paragrafoDesejo) {
+        paragrafoDesejo.textContent = mensagemAleatoria;
+    }
+
     // Botão de Nova mensagem
     const newBtn = document.getElementById('newBtn');
     newBtn.addEventListener('click', () => {
