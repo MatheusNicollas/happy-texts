@@ -20,6 +20,31 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'index.html';
     });
 
+    // Botão de Compartilhar (Web Share API com Fallback)
+    const shareBtn = document.getElementById('shareBtn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', async () => {
+            const shareData = {
+                title: 'Feliz Aniversário!',
+                text: `Olha só essa mensagem de aniversário especial! 🎉`,
+                url: window.location.href // Pega a URL atual com o nome digitado
+            };
+
+            // Se o navegador mobile suportar a funcionalidade nativa de compartilhar
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('Compartilhamento ignorado pelo usuário.', err);
+                }
+            } else {
+                // FALLBACK: Se estiver no PC ou navegador não suportar native share
+                const whatsappText = encodeURIComponent(`${shareData.text} \nAcesse aqui: ${shareData.url}`);
+                window.open(`https://api.whatsapp.com/send?text=${whatsappText}`, '_blank');
+            }
+        });
+    }
+
 
     // --- Animação Vanilla JS de Confetes no Canvas ---
     

@@ -136,7 +136,7 @@ input:focus {
     background: transparent;
     color: var(--secondary-col);
     border: 2px solid var(--secondary-col);
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .secondary-btn:hover {
@@ -144,6 +144,18 @@ input:focus {
     color: var(--text-white);
     transform: translateY(-2px);
 }
+
+.whatsapp-btn {
+    background: #25D366;
+    color: var(--text-white);
+    margin-top: 2rem;
+}
+
+.whatsapp-btn:hover {
+    background: #128C7E;
+    transform: translateY(-2px);
+}
+
 
 /* --- ESTILOS ESPECÍFICOS DA PÁGINA 2 --- */
 .message-card {
