@@ -354,7 +354,7 @@ input:focus {
 }
 
 /* Canvas auxiliares */
-#snowCanvas, #fireworksCanvas {
+#snowCanvas, #fireworksCanvas, #easterCanvas, #mothersdayCanvas, #fathersdayCanvas {
     position: fixed;
     top: 0;
     left: 0;

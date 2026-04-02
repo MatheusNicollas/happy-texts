@@ -201,12 +201,12 @@ document.addEventListener('DOMContentLoaded', () => {
         animateConfetti();
     }
 
-    // Neve para o Natal
+    // Neve, Árvores e Bolinhas para o Natal
     const snowCanvas = document.getElementById('snowCanvas');
     if (snowCanvas) {
         const ctx = snowCanvas.getContext('2d');
-        let snowflakes = [];
-        const numSnowflakes = 100;
+        let particles = [];
+        const numParticles = 120; // Um pouco mais de partículas para preencher bem
 
         function resizeCanvas() {
             snowCanvas.width = window.innerWidth;
@@ -215,47 +215,505 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        class Snowflake {
+        class ChristmasParticle {
             constructor() {
                 this.x = Math.random() * snowCanvas.width;
                 this.y = Math.random() * snowCanvas.height - snowCanvas.height;
-                this.size = Math.random() * 3 + 1;
-                this.speedY = Math.random() * 2 + 1;
-                this.speedX = Math.random() * 1 - 0.5;
+                
+                // Distribuição: 60% neve, 20% bolinhas vermelhas, 20% pinheirinhos
+                let r = Math.random();
+                if (r < 0.6) {
+                    this.type = 'snow';
+                    this.size = Math.random() * 3 + 1;
+                    this.speedY = Math.random() * 2 + 1;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.rotation = 0;
+                    this.rotationSpeed = 0;
+                } else if (r < 0.8) {
+                    this.type = 'bauble';
+                    this.size = Math.random() * 5 + 4; // tamanho 4 a 9
+                    this.speedY = Math.random() * 1.5 + 1;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+                } else {
+                    this.type = 'tree';
+                    this.size = Math.random() * 6 + 6; // tamanho 6 a 12
+                    this.speedY = Math.random() * 1.2 + 0.8;
+                    this.speedX = Math.random() * 0.5 - 0.25;
+                    this.rotation = (Math.random() - 0.5) * 0.3; // leve balanço
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.015;
+                }
             }
             update() {
                 this.y += this.speedY;
                 this.x += this.speedX;
-                this.x += Math.sin(this.y * 0.02) * 0.5;
-                if (this.y > snowCanvas.height) {
-                    this.y = -10;
+                
+                if (this.type === 'snow') {
+                    this.x += Math.sin(this.y * 0.02) * 0.5;
+                } else {
+                    this.x += Math.sin(this.y * 0.01) * 0.3;
+                    this.rotation += this.rotationSpeed;
+                }
+                
+                if (this.y > snowCanvas.height + 20) {
+                    this.y = -20;
                     this.x = Math.random() * snowCanvas.width;
                 }
             }
             draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = 'white';
-                ctx.fill();
-                ctx.closePath();
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                if (this.type === 'snow') {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.fill();
+                    ctx.closePath();
+                } else if (this.type === 'bauble') {
+                    // Topo dourado (onde pendura)
+                    ctx.fillStyle = '#facc15';
+                    ctx.fillRect(-this.size/4, -this.size - 2, this.size/2, 3);
+                    // Bolinha vermelha
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = '#dc2626'; // Vermelho
+                    ctx.fill();
+                    ctx.closePath();
+                    // Reflexo de luz (brilho)
+                    ctx.beginPath();
+                    ctx.arc(-this.size/3, -this.size/3, this.size/3, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.fill();
+                    ctx.closePath();
+                } else if (this.type === 'tree') {
+                    // Tronco
+                    ctx.fillStyle = '#78350f'; // Marrom
+                    ctx.fillRect(-this.size*0.2, this.size, this.size*0.4, this.size*0.7);
+                    // Folhas (Triângulo)
+                    ctx.fillStyle = '#16a34a'; // Verde vibrante
+                    ctx.beginPath();
+                    ctx.moveTo(0, -this.size);
+                    ctx.lineTo(-this.size * 1.2, this.size);
+                    ctx.lineTo(this.size * 1.2, this.size);
+                    ctx.closePath();
+                    ctx.fill();
+                    // Estrela no topo
+                    ctx.fillStyle = '#facc15'; // Amarelo
+                    ctx.beginPath();
+                    ctx.arc(0, -this.size, this.size*0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.restore();
             }
         }
 
-        function initSnow() {
-            for (let i = 0; i < numSnowflakes; i++) {
-                snowflakes.push(new Snowflake());
+        function initParticles() {
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new ChristmasParticle());
             }
         }
-        function animateSnow() {
+        function animateParticles() {
             ctx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
-            for (let s of snowflakes) {
-                s.update();
-                s.draw();
+            for (let p of particles) {
+                p.update();
+                p.draw();
             }
-            requestAnimationFrame(animateSnow);
+            requestAnimationFrame(animateParticles);
         }
-        initSnow();
-        animateSnow();
+        initParticles();
+        animateParticles();
+    }
+    // Coelhinhos e Ovos para a Páscoa
+    const easterCanvas = document.getElementById('easterCanvas');
+    if (easterCanvas) {
+        const ctx = easterCanvas.getContext('2d');
+        let easterParticles = [];
+        const numEasterParticles = 60; // Número menor para os coelhinhos e ovos ficarem com espaço
+
+        function resizeCanvas() {
+            easterCanvas.width = window.innerWidth;
+            easterCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class EasterParticle {
+            constructor() {
+                this.x = Math.random() * easterCanvas.width;
+                this.y = Math.random() * easterCanvas.height - easterCanvas.height;
+                
+                // Distribuição: 70% ovinhos de páscoa, 30% coelhinhos
+                let r = Math.random();
+                if (r < 0.7) {
+                    this.type = 'egg';
+                    this.size = Math.random() * 6 + 5; // tamanho 5 a 11
+                    this.color = ['#fbcfe8', '#bfdbfe', '#fef08a', '#d9f99d', '#e9d5ff'][Math.floor(Math.random() * 5)]; // Tons pastéis
+                    this.speedY = Math.random() * 1.5 + 1.5;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.05;
+                } else {
+                    this.type = 'bunny';
+                    this.size = Math.random() * 5 + 4; // tamanho 4 a 9
+                    this.speedY = Math.random() * 1.2 + 1.2;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.rotation = (Math.random() - 0.5) * 0.3; // leve balanço
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                }
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                
+                this.x += Math.sin(this.y * 0.01) * 0.3;
+                this.rotation += this.rotationSpeed;
+                
+                if (this.y > easterCanvas.height + 30) {
+                    this.y = -30;
+                    this.x = Math.random() * easterCanvas.width;
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                if (this.type === 'egg') {
+                    // Ovo: um círculo alongado verticalmente
+                    ctx.scale(1, 1.3);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    ctx.closePath();
+                    // Leve brilho
+                    ctx.beginPath();
+                    ctx.arc(-this.size/3, -this.size/3, this.size/3, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.fill();
+                    ctx.closePath();
+                } else if (this.type === 'bunny') {
+                    ctx.fillStyle = '#ffffff'; // Coelho branco
+                    
+                    // Orelha esquerda
+                    ctx.beginPath();
+                    ctx.ellipse(-this.size/2.5, -this.size, this.size/3.5, this.size, -Math.PI/8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Orelha direita
+                    ctx.beginPath();
+                    ctx.ellipse(this.size/2.5, -this.size, this.size/3.5, this.size, Math.PI/8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Detalhe orelha esquerda
+                    ctx.fillStyle = '#fbcfe8'; // Rosa pastel
+                    ctx.beginPath();
+                    ctx.ellipse(-this.size/2.5, -this.size, this.size/7, this.size/1.5, -Math.PI/8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Detalhe orelha direita
+                    ctx.beginPath();
+                    ctx.ellipse(this.size/2.5, -this.size, this.size/7, this.size/1.5, Math.PI/8, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Cabeça do coelho
+                    ctx.fillStyle = '#ffffff'; 
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Focinho rosa
+                    ctx.fillStyle = '#fbcfe8';
+                    ctx.beginPath();
+                    ctx.arc(0, this.size/3, this.size/4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+            }
+        }
+
+        function initEasterParticles() {
+            for (let i = 0; i < numEasterParticles; i++) {
+                easterParticles.push(new EasterParticle());
+            }
+        }
+        function animateEasterParticles() {
+            ctx.clearRect(0, 0, easterCanvas.width, easterCanvas.height);
+            for (let p of easterParticles) {
+                p.update();
+                p.draw();
+            }
+            requestAnimationFrame(animateEasterParticles);
+        }
+        initEasterParticles();
+        animateEasterParticles();
+    }
+    // Rosas e Pétalas para o Dia das Mães
+    const mothersdayCanvas = document.getElementById('mothersdayCanvas');
+    if (mothersdayCanvas) {
+        const ctx = mothersdayCanvas.getContext('2d');
+        let roseParticles = [];
+        const numRoseParticles = 70; // Uma quantidade delicada
+
+        function resizeCanvas() {
+            mothersdayCanvas.width = window.innerWidth;
+            mothersdayCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class RoseParticle {
+            constructor() {
+                this.x = Math.random() * mothersdayCanvas.width;
+                this.y = Math.random() * mothersdayCanvas.height - mothersdayCanvas.height;
+                
+                // 70% pétalas soltas, 30% rosas inteiras
+                let r = Math.random();
+                if (r < 0.7) {
+                    this.type = 'petal';
+                    this.size = Math.random() * 4 + 3; // 3 a 7
+                    this.color = ['#fb7185', '#f43f5e', '#e11d48'][Math.floor(Math.random() * 3)];
+                    this.speedY = Math.random() * 1.5 + 0.8;
+                    this.speedX = Math.random() * 1.5 - 0.75;
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.08;
+                } else {
+                    this.type = 'rose';
+                    this.size = Math.random() * 5 + 5; // 5 a 10
+                    this.color = ['#f43f5e', '#e11d48', '#be123c'][Math.floor(Math.random() * 3)];
+                    this.speedY = Math.random() * 2 + 1.2;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.rotation = (Math.random() - 0.5) * 0.4;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.03;
+                }
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                
+                if (this.type === 'petal') {
+                    this.x += Math.sin(this.y * 0.02) * 1.0;
+                    this.rotation += this.rotationSpeed;
+                } else {
+                    this.x += Math.sin(this.y * 0.01) * 0.5;
+                    this.rotation += Math.sin(this.y * 0.01) * 0.02; // Leve balanço tipo pêndulo
+                }
+                
+                if (this.y > mothersdayCanvas.height + 40) {
+                    this.y = -40;
+                    this.x = Math.random() * mothersdayCanvas.width;
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                if (this.type === 'petal') {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    // Forma delicada de gota/pétala
+                    ctx.moveTo(0, -this.size);
+                    ctx.quadraticCurveTo(this.size, 0, 0, this.size);
+                    ctx.quadraticCurveTo(-this.size, 0, 0, -this.size);
+                    ctx.fill();
+                } else if (this.type === 'rose') {
+                    // Caule
+                    ctx.strokeStyle = '#22c55e'; // Verde claro para maté-lo vibrante
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(this.size, this.size*2, 0, this.size*3.5);
+                    ctx.stroke();
+                    
+                    // Folha
+                    ctx.fillStyle = '#16a34a'; // Verde ligeiramente mais escuro
+                    ctx.beginPath();
+                    ctx.ellipse(-this.size/1.5, this.size*1.5, this.size/1.2, this.size/2.5, -Math.PI/4, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Corpo da rosa
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Brilho superior
+                    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                    ctx.beginPath();
+                    ctx.arc(-this.size/4, -this.size/4, this.size/1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Espiral interna para dar aparência de botão/pétalas fechadas
+                    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size/2, 0, Math.PI);
+                    ctx.stroke();
+                }
+                
+                ctx.restore();
+            }
+        }
+
+        function initRoseParticles() {
+            for (let i = 0; i < numRoseParticles; i++) {
+                roseParticles.push(new RoseParticle());
+            }
+        }
+        function animateRoseParticles() {
+            ctx.clearRect(0, 0, mothersdayCanvas.width, mothersdayCanvas.height);
+            for (let p of roseParticles) {
+                p.update();
+                p.draw();
+            }
+            requestAnimationFrame(animateRoseParticles);
+        }
+        initRoseParticles();
+        animateRoseParticles();
+    }
+    // Animação para o Dia dos Pais (Gravatas, Bigodes e Estrelas)
+    const fathersdayCanvas = document.getElementById('fathersdayCanvas');
+    if (fathersdayCanvas) {
+        const ctx = fathersdayCanvas.getContext('2d');
+        let fathersdayParticles = [];
+        const numFathersParticles = 60; 
+
+        function resizeCanvas() {
+            fathersdayCanvas.width = window.innerWidth;
+            fathersdayCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class FathersdayParticle {
+            constructor() {
+                this.x = Math.random() * fathersdayCanvas.width;
+                this.y = Math.random() * fathersdayCanvas.height - fathersdayCanvas.height;
+                
+                // Distribuição: 45% gravatas, 35% bigodes, 20% estrelas
+                let r = Math.random();
+                if (r < 0.45) {
+                    this.type = 'tie';
+                    this.size = Math.random() * 8 + 6; 
+                    this.color = ['#0284c7', '#0369a1', '#cbd5e1'][Math.floor(Math.random() * 3)]; // Tons de azul/cinza
+                    this.speedY = Math.random() * 1.5 + 1.0;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.rotation = (Math.random() - 0.5) * 0.5;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                } else if (r < 0.8) {
+                    this.type = 'moustache';
+                    this.size = Math.random() * 6 + 5; 
+                    this.color = ['#1e293b', '#334155', '#475569'][Math.floor(Math.random() * 3)]; // Tons escuros
+                    this.speedY = Math.random() * 1.2 + 0.8;
+                    this.speedX = Math.random() * 1.5 - 0.75;
+                    this.rotation = (Math.random() - 0.5) * 0.3;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.03;
+                } else {
+                    this.type = 'star';
+                    this.size = Math.random() * 5 + 4; 
+                    this.color = '#facc15'; // Estrela dourada
+                    this.speedY = Math.random() * 2 + 1.5;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+                }
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                
+                if (this.type === 'star') {
+                    this.x += Math.sin(this.y * 0.02) * 1.0; // Movimento leve das estrelas
+                    this.rotation += this.rotationSpeed;
+                } else if (this.type === 'tie') {
+                    this.x += Math.sin(this.y * 0.01) * 0.5;
+                    this.rotation += Math.sin(this.y * 0.02) * 0.03; // balanço da gravata
+                } else {
+                    this.x += this.speedX;
+                    this.rotation += this.rotationSpeed;
+                }
+                
+                if (this.y > fathersdayCanvas.height + 40) {
+                    this.y = -40;
+                    this.x = Math.random() * fathersdayCanvas.width;
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
+                if (this.type === 'tie') {
+                    ctx.fillStyle = this.color;
+                    
+                    // Nó da gravata
+                    ctx.beginPath();
+                    ctx.moveTo(-this.size/2, -this.size);
+                    ctx.lineTo(this.size/2, -this.size);
+                    ctx.lineTo(this.size/3, -this.size/2);
+                    ctx.lineTo(-this.size/3, -this.size/2);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    // Corpo da gravata
+                    ctx.beginPath();
+                    ctx.moveTo(-this.size/3, -this.size/2);
+                    ctx.lineTo(this.size/3, -this.size/2);
+                    ctx.lineTo(this.size/1.2, this.size*1.5);
+                    ctx.lineTo(0, this.size*2.2);
+                    ctx.lineTo(-this.size/1.2, this.size*1.5);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                } else if (this.type === 'moustache') {
+                    ctx.fillStyle = this.color;
+                    
+                    // Parte esquerda do bigode
+                    ctx.beginPath();
+                    ctx.ellipse(-this.size/1.2, 0, this.size, this.size*0.4, Math.PI/6, 0, Math.PI*2);
+                    ctx.fill();
+                    
+                    // Parte direita do bigode
+                    ctx.beginPath();
+                    ctx.ellipse(this.size/1.2, 0, this.size, this.size*0.4, -Math.PI/6, 0, Math.PI*2);
+                    ctx.fill();
+                    
+                } else if (this.type === 'star') {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        ctx.lineTo(Math.cos((18+i*72)*Math.PI/180)*this.size, -Math.sin((18+i*72)*Math.PI/180)*this.size);
+                        ctx.lineTo(Math.cos((54+i*72)*Math.PI/180)*this.size*0.4, -Math.sin((54+i*72)*Math.PI/180)*this.size*0.4);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+            }
+        }
+
+        function initFathersParticles() {
+            for (let i = 0; i < numFathersParticles; i++) {
+                fathersdayParticles.push(new FathersdayParticle());
+            }
+        }
+        function animateFathersParticles() {
+            ctx.clearRect(0, 0, fathersdayCanvas.width, fathersdayCanvas.height);
+            for (let p of fathersdayParticles) {
+                p.update();
+                p.draw();
+            }
+            requestAnimationFrame(animateFathersParticles);
+        }
+        initFathersParticles();
+        animateFathersParticles();
     }
     
     // Fogos de artifício para Ano Novo
