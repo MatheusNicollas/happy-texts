@@ -3,6 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('nameInput');
     const generateBtn = document.getElementById('generateBtn');
     const errorMsg = document.getElementById('errorMsg');
+    const pageTitle = document.getElementById('pageTitle');
+
+    // Pega o tema da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'birthday';
+
+    if (pageTitle) {
+        const themeTitles = {
+            'birthday': '🎉 Criar mensagem<br>de aniversário',
+            'christmas': '🎄 Criar mensagem<br>de Natal',
+            'newyear': '🥂 Criar mensagem<br>de Ano Novo',
+            'easter': '🐰 Criar mensagem<br>de Páscoa',
+            'mothersday': '🌹 Criar mensagem<br>de Dia das Mães',
+            'fathersday': '👔 Criar mensagem<br>de Dia dos Pais'
+        };
+
+        if (themeTitles[theme]) {
+            pageTitle.innerHTML = themeTitles[theme];
+        }
+    }
 
     // Ao clicar em gerar mensagem
     generateBtn.addEventListener('click', () => {
@@ -24,9 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Tudo certo!
             errorMsg.classList.remove('visible');
             
-            // Pega o tema da URL da página name.html
-            const urlParams = new URLSearchParams(window.location.search);
-            const theme = urlParams.get('theme') || 'birthday'; // fallback caso não tenha
+            // O tema já foi pego da URL no início do script
             
             // A codificação garante que caracteres como acentos ou espaços vá corretamente via URL HTTP
             const encodedName = encodeURIComponent(nomeDigitado);
